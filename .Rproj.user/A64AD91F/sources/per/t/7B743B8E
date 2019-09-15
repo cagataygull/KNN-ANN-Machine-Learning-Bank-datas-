@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1558311925942.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "143989725",
+    "id" : "7B743B8E",
+    "lastKnownWriteTime" : 1558312010,
+    "last_content_update" : 1558312010284,
+    "path" : "C:/Users/cagatay/Desktop/Rassgn/KNN.R",
+    "project_path" : "KNN.R",
+    "properties" : {
+        "cursorPosition" : "55,0",
+        "scrollLine" : "32",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

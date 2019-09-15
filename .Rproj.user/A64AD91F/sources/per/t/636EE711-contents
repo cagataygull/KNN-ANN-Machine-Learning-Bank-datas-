@@ -1,0 +1,176 @@
+library("dplyr")
+install.packages("e1071")
+library(e1071)
+getwd()
+bank_data <- read.csv("bank-full.csv", sep=";")
+str(bank_data)
+
+bank_data.new<-bank_data %>% select(age,job,marital,education,default,balance,housing,loan,campaign,pdays,poutcome,y)
+
+bank_data.new$balance<-(bank_data.new$balance - min(bank_data.new$balance))/(max(bank_data.new$balance)-min(bank_data.new$balance))
+bank_data.new$age<-(bank_data.new$age - min(bank_data.new$age))/(max(bank_data.new$age)-min(bank_data.new$age))
+bank_data.new$campaign <- (bank_data.new$campaign-min(bank_data.new$campaign)) /(max(bank_data.new$campaign)-min(bank_data.new$campaign))
+hist(bank_data.new$balance,freq=FALSE,main="Was client previously contacted?")
+#hist(bank_data$balance,freq=FALSE,main="Was client previously contacted?")
+#table(bnk$education)
+head(model.matrix(~education, data=bank_data.new))
+levels(bank_data$job)
+levels(bank_data$education)
+levels(bank_data$marital)
+levels(bank_data$education)
+levels(bank_data$default)
+levels(bank_data$housing)
+levels(bank_data$loan)
+levels(bank_data$poutcome)
+head(model.matrix(~y, data=bank_data.new))
+head(model.matrix(~job, data=bank_data.new))
+head(model.matrix(~education, data=bank_data.new))
+head(model.matrix(~marital, data=bank_data.new))
+head(model.matrix(~default, data=bank_data.new))
+head(model.matrix(~housing, data=bank_data.new))
+head(model.matrix(~loan, data=bank_data.new))
+head(model.matrix(~poutcome, data=bank_data.new))
+general_bank_data_matix <- model.matrix(~age+job+marital+education
+                                        +default+balance+housing
+                                        +loan+campaign+pdays+poutcome+y, data=bank_data.new)
+head(general_bank_data_matix)
+colnames(general_bank_data_matix)
+colnames(general_bank_data_matix)[3] <- "jobbluecollar"
+colnames(general_bank_data_matix)[8] <- "jobselfemployed"
+colnames(general_bank_data_matix)
+formulas <- paste(c(colnames(general_bank_data_matix[,-c(1,28)])),collapse="+")
+formulas <- paste(c("yyes~",formulas),collapse="")
+formulas
+
+
+install.packages("dplyr")
+install.packages("caret")
+library(MASS,quietly = TRUE)
+library(caret)
+library(caTools)
+library(neuralnet)
+library(caTools)
+set.seed(7896129)
+ind<-createDataPartition(bank_data.new$y,p=3/4,list = FALSE)
+train<-general_bank_data_matix[ind,]
+test<-general_bank_data_matix[-ind,]
+
+nn_rprop_multis <- neuralnet(formulas, data=train,
+                             threshold = 0.25,linear.output = FALSE,hidden=c(3),
+                             stepmax = 1e+05,
+                             learningrate.limit = NULL, learningrate.factor = list(minus = 0.5, plus = 1.2), learningrate = NULL, lifesign = "none")
+
+
+
+
+
+parameterGrid<-expand.grid(mtry=c(2,3,4,5))
+model<-train(yyes~.,data=trains,method="rf",trControl=parameterstrain,tuneGrid=parameterGrid)
+model 
+predictions<-predict(model,tests)
+tab<-table(predictions=predictions,actual=tests$y)
+tab
+
+general_bank_data_matix.Partition
+
+plot(nn_rprop_multis)
+head(output$net.result)
+head(general_bank_data_matix[1,])
+summary(general_bank_data_matix)
+
+
+output<-predict(nn_rprop_multis,test)
+
+xx=output[,1]
+for ( i in 1:length(output[,1])) {
+  if(output[i,1]>=0.5)xx[i]=1
+  else xx[i]=0
+  
+}
+
+confusionMatrix(as.factor(xx), as.factor(test[,28]))
+install.packages("lattice")
+library(MASS)
+set.seed(450)
+library(boot)
+set.seed(450)
+cv.error <- NULL
+counter<-1
+lastresult<-0
+library(plyr) 
+library(neuralnet)
+library(MASS,quietly = TRUE)
+library(caret)
+library(caTools)
+library(dplyr) 
+#######CROSS VALIDATION#######
+
+library(boot)
+set.seed(7896129)
+proportion <- 0.95
+k <- 10
+outs <- NULL
+precisionnn<-NULL
+recall_cv<-NULL
+precision_cv<-NULL
+for(i in 1:(k))
+{
+  index <- sample(1:nrow(general_bank_data_matix),round((i/11)*nrow(general_bank_data_matix)))
+  train_cv <- general_bank_data_matix[index, ]
+  test_cv <- general_bank_data_matix[-index, ]
+  nn_rprop_multiss <- neuralnet(formulas, data=train_cv,
+                                threshold = 0.25,linear.output = FALSE,hidden=c(3),
+                                stepmax = 1e+05,
+                                learningrate.limit = NULL, learningrate.factor = list(minus = 0.2, plus = 1.5), learningrate = NULL, lifesign = "none")  
+  output<-predict(nn_rprop_multiss,test_cv)
+ 
+  xx=output[,1]
+  nrow(output[,1])
+  
+  for ( j in 1:length(output[,1])) {
+    if(output[j,1]>=0.5)xx[j]=1
+    else xx[j]=0
+    
+  }
+  
+  
+  resultnn<-confusionMatrix(as.factor(xx), as.factor(test_cv[,28]))
+  str(resultnn)
+  ####recall######
+  recallnn[i]<-resultnn$table[1,1]/(resultnn$table[1,1]+resultnn$table[1,2])
+  ####precision######
+  precisionnn[i]<-resultnn$table[1,1]/(resultnn$table[1,1]+resultnn$table[2,1])
+  
+
+  overall<-resultnn$overall
+  overall.accuracy<-overall['Accuracy']
+  result<-overall.accuracy
+  outs[i] <- result
+  result<-NULL
+  
+}
+mean(recallnn)
+mean(precisionnn)
+plot(precisionnn)
+outs
+mean(outs)
+plot(outs)
+plot(outs, avg= "threshold", colorize=T, 
+     main= "Precision/Recall graphs")
+plot(outs, lty=3,type="l")
+precisionnn
+install.packages("ROCR")
+
+indexre <- sample(1:nrow(general_bank_data_matix),round((1/11)*nrow(general_bank_data_matix)))
+train_re <- general_bank_data_matix[indexre, ]
+test_re <- general_bank_data_matix[-indexre, ]
+library(ROCR)                                            
+
+
+plot(recallnn, avg= "threshold", colorize=T, 
+     main= "Precision/Recall graphs")
+plot(recallnn, lty=3,type="l")
+
+plot(precisionnn, avg= "threshold", colorize=T, 
+     main= "Precision/Recall graphs")
+plot(precisionnn, lty=3,type="l")

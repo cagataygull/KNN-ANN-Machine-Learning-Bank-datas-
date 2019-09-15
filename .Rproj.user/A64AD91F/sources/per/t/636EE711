@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1557485812923.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1541510740",
+    "id" : "636EE711",
+    "lastKnownWriteTime" : 1558311237,
+    "last_content_update" : 1558311237250,
+    "path" : "C:/Users/cagatay/Desktop/Rneuralnework.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "95,13",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
